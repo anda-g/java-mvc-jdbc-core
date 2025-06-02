@@ -11,6 +11,5 @@ public class Product {
     private Integer id;
     private String uuid;
     private String name;
-    private Double price;
     private LocalDate expiryDate;
 }
