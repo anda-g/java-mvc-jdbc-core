@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService{
         if(product != null) {
             return productRepository.delete(product.getId());
         }
-        System.out.println("No such product with uuid: " + uuid);
+        System.err.println("[!] No such product with uuid: " + uuid);
         return 0;
     }
 

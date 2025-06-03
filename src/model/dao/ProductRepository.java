@@ -1,6 +1,5 @@
 package model.dao;
 
-import model.ProductData;
 import model.dto.UpdateProductDto;
 import model.enities.Product;
 import util.DatabaseConfig;
@@ -91,11 +90,13 @@ public class ProductRepository implements Repository<Product, Integer> {
             String sql = """
                     UPDATE products
                     SET p_name = ?
+                    WHERE uuid = ?
                     RETURNING *
                     """;
             try (Connection conn = DatabaseConfig.getConnection()){
                 PreparedStatement pre = conn.prepareStatement(sql);
                 pre.setString(1, updateProductDto.name());
+                pre.setString(2, uuid);
                 return getProduct(pre);
             } catch (SQLException e) {
                 System.out.println("[!] SQLException: " + e.getMessage());

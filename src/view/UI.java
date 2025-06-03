@@ -2,9 +2,11 @@ package view;
 
 import controller.ProductController;
 import model.dto.ProductCreateDto;
+import model.dto.ProductResponseDto;
 import model.dto.UpdateProductDto;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -14,21 +16,55 @@ public class UI {
         do{
             switch (menu()){
                 case 1 -> {
-                    productController.getAllProducts().forEach(System.out::println);
+                    TableUI.getTableDisplay(productController.getAllProducts());
                 }
                 case 2 -> {
-                    System.out.println("[+] Enter product name: ");
+                    System.out.print("[+] Enter product name: ");
                     String name = scanner.nextLine();
+                    System.out.print("[+] Enter expired year: ");
+                    int year = Integer.parseInt(scanner.nextLine());
+                    System.out.print("[+] Enter expired month: ");
+                    int month = Integer.parseInt(scanner.nextLine());
+                    System.out.print("[+] Enter expired day: ");
+                    int day = Integer.parseInt(scanner.nextLine());
+
+                    ProductCreateDto createDto = new ProductCreateDto(name, LocalDate.of(year, month, day));
+                    ProductResponseDto responseDto = productController.insertNewProduct(createDto);
+                    TableUI.getTableDisplay(List.of(responseDto));
                 }
                 case 3 -> {
-                    System.out.println("[+] Enter product name: ");
-                    String name = scanner.nextLine();
+                    System.out.print("[+] Enter product uuid: ");
+                    String uuid = scanner.nextLine().trim();
+                    System.out.print("[+] Enter new product name: ");
+                    String name = scanner.nextLine().trim();
                     UpdateProductDto updateProductDto = new UpdateProductDto(name);
+                    ProductResponseDto responseDto = productController.updateProductByUuid(uuid, updateProductDto);
+                    TableUI.getTableDisplay(List.of(responseDto));
                 }
                 case 4 -> {
+                    System.out.print("[+] Enter product uuid: ");
+                    String uuid = scanner.nextLine().trim();
+                    try{
+                        ProductResponseDto responseDto = productController.getProductByUuid(uuid);
+                        TableUI.getTableDisplay(List.of(responseDto));
+                    }catch (NullPointerException e){
+                        System.err.println("[+] Product not found");
+                    }
+
+                }
+                case 5 -> {
+                    System.out.print("[+] Enter product uuid: ");
+                    String uuid = scanner.nextLine().trim();
+                    int status = productController.deleteProductByUuid(uuid);
+                    if(status > 0){
+                        System.out.println("[+] Product deleted successfully");
+                    }
+                }
+                case 6 -> {
                     return;
                 }
             }
+            System.out.print("[+] Any key to continue..."); scanner.nextLine();
         }while(true);
     }
 
@@ -40,7 +76,9 @@ public class UI {
         ║  1. Get all products           ║
         ║  2. Add new product            ║
         ║  3. Update product             ║
-        ║  4. Exit                       ║
+        ║  4. Search product             ║
+        ║  5. Delete product             ║
+        ║  6. Exit                       ║
         ╚════════════════════════════════╝""");
         int choice = 0;
         do {
@@ -51,7 +89,7 @@ public class UI {
                 choice = 0;
             }
 
-        }while (choice < 1 || choice > 4 );
+        }while (choice < 1 || choice >6 );
         return choice;
     }
 }
