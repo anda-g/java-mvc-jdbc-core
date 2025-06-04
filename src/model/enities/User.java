@@ -16,5 +16,4 @@ public class User {
     private String uuid;
     private LocalDate createdDate;
     private String password;
-
 }

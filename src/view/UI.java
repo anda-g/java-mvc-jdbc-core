@@ -12,11 +12,12 @@ import java.util.Scanner;
 public class UI {
     private final static Scanner scanner = new Scanner(System.in);
     private final static ProductController productController = new ProductController();
+    private final static TableUI<ProductResponseDto> tableUI = new TableUI<>();
     public static void home(){
         do{
             switch (menu()){
                 case 1 -> {
-                    TableUI.getTableDisplay(productController.getAllProducts());
+                    tableUI.getTableDisplay(productController.getAllProducts());
                 }
                 case 2 -> {
                     System.out.print("[+] Enter product name: ");
@@ -30,7 +31,7 @@ public class UI {
 
                     ProductCreateDto createDto = new ProductCreateDto(name, LocalDate.of(year, month, day));
                     ProductResponseDto responseDto = productController.insertNewProduct(createDto);
-                    TableUI.getTableDisplay(List.of(responseDto));
+                    tableUI.getTableDisplay(List.of(responseDto));
                 }
                 case 3 -> {
                     System.out.print("[+] Enter product uuid: ");
@@ -39,14 +40,14 @@ public class UI {
                     String name = scanner.nextLine().trim();
                     UpdateProductDto updateProductDto = new UpdateProductDto(name);
                     ProductResponseDto responseDto = productController.updateProductByUuid(uuid, updateProductDto);
-                    TableUI.getTableDisplay(List.of(responseDto));
+                    tableUI.getTableDisplay(List.of(responseDto));
                 }
                 case 4 -> {
                     System.out.print("[+] Enter product uuid: ");
                     String uuid = scanner.nextLine().trim();
                     try{
                         ProductResponseDto responseDto = productController.getProductByUuid(uuid);
-                        TableUI.getTableDisplay(List.of(responseDto));
+                        tableUI.getTableDisplay(List.of(responseDto));
                     }catch (NullPointerException e){
                         System.err.println("[+] Product not found");
                     }
