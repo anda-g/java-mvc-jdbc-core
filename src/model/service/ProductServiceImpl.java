@@ -38,10 +38,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Integer deleteProductByUuid(String uuid) {
-        Product product = ProductData.products.stream()
-                .filter(p->p.getUuid().equals(uuid))
-                .findFirst()
-                .orElse(null);
+        Product product = productRepository.findProductByUuid(uuid);
         if(product != null) {
             return productRepository.delete(product.getId());
         }
